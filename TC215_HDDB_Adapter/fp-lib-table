@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name Connectors_DSub)(type KiCad)(uri /home/karstenpufahl/Documents/Electronics/kicad/Connectors_DSub.pretty)(options "")(descr ""))
+)
