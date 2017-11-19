@@ -31,7 +31,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:TC215-cache
+LIBS:TC215_HDDB_Adapter_HDDB_Adapter-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -251,12 +251,42 @@ Wire Wire Line
 	5200 4200 4300 4200
 Connection ~ 3800 5000
 Wire Wire Line
-	4300 5000 5400 5000
-Wire Wire Line
-	5400 5000 5400 4900
+	5400 4900 5400 5100
 Wire Wire Line
 	5400 4900 7100 4900
 Connection ~ 7100 4900
 Wire Wire Line
 	7100 4900 7100 3500
+$Comp
+L Jumper_NC_Dual JP1
+U 1 1 5A11B148
+P 5400 5200
+F 0 "JP1" H 5450 5100 50  0000 L CNN
+F 1 "Jumper_NC_Dual" H 5400 5300 50  0000 C BNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 5400 5200 50  0001 C CNN
+F 3 "" H 5400 5200 50  0001 C CNN
+	1    5400 5200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5150 5200 5050 5200
+Wire Wire Line
+	5050 5200 5050 5000
+Wire Wire Line
+	5050 5000 4300 5000
+Wire Wire Line
+	5650 5200 5800 5200
+Wire Wire Line
+	5800 5200 5800 5400
+$Comp
+L GND #PWR03
+U 1 1 5A11B410
+P 5800 5400
+F 0 "#PWR03" H 5800 5150 50  0001 C CNN
+F 1 "GND" H 5800 5250 50  0000 C CNN
+F 2 "" H 5800 5400 50  0001 C CNN
+F 3 "" H 5800 5400 50  0001 C CNN
+	1    5800 5400
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
