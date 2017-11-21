@@ -1,0 +1,63 @@
+IO Pins Brother TC 215
+
+7I77 Mesa Daughter Card
+
+IN
+--
+00 X+ Limit
+01 X- Limit
+02 Y+ Limit
+03 Y- Limit
+04 Z+ Limit
+05 Z- Limit
+06
+07 
+--
+08 X Home
+09 Y Home
+10 Z Home
+11 ATC zero
+12 ATC range
+13 
+14 
+15 
+--
+16 CNENC Pin 7
+17 CNENC Pin 3
+18 CNENC Pin 4
+19 CNENC Pin 5
+20 CNENC Pin 6
+21 
+22 
+23 
+--
+24 
+25 
+26 
+27 
+28 
+29 
+30 
+31 
+--
+
+OUT
+--
+00 
+01 Relay for CNATC Pin 7+8 (207+208)
+02 Relay for CNATC Pin 1 (206) 
+03 
+04 
+05 
+06 Z Break Relay
+07 
+--
+08 
+09 
+10 
+11 
+12 
+13 
+14 
+15 
+--
