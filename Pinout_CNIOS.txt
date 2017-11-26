@@ -22,7 +22,7 @@ CNIOS
 19 Relay for CNATC Pin 7+8 (207+208)
 20 Relay for CNATC Pin 1 (206)
 21
-22
+22 Air
 23
 24 Z Brake Relay
 25
