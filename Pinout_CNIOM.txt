@@ -1,6 +1,6 @@
 IO Pins Brother TC 215
 
-CNIOS
+CNIOM
 01 
 02 
 03 
