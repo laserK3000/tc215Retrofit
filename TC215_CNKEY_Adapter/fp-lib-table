@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name Connectors_IDC)(type KiCad)(uri /usr/share/kicad/footprints/Connectors_IDC.pretty)(options "")(descr ""))
+  (lib (name OSHW-logo)(type Legacy)(uri /home/karstenpufahl/Documents/CNC/Retrofits/tc215Retrofit/TC215_HDDB_Adapter/OSHW-logo.mod)(options "")(descr ""))
+)
