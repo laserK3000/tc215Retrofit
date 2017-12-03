@@ -1,0 +1,39 @@
+IO Pins Brother TC 215
+
+CNIOS
+01 X+ Limit
+02 X- Limit
+03 Y+ Limit
+04 Y- Limit
+05 Z+ Limit
+06 Z- Limit
+07 
+08 X Home
+09 Y Home
+10 Z Home
+11 ATC zero
+12 ATC range
+13 CNENC Pin 7
+14 CNENC Pin 3
+15 CNENC Pin 4
+16 CNENC Pin 5
+17 CNENC Pin 6
+18 
+19 Relay for CNATC Pin 7+8 (207+208)
+20 Relay for CNATC Pin 1 (206)
+21
+22 Air
+23
+24 Z Brake Relay
+25
+26 
+27
+28
+29
+30
+31 
+32
+33
+34
+
+
