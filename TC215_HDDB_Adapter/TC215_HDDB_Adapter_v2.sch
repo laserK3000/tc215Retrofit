@@ -58,17 +58,6 @@ F 3 "" H 4100 3800 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L DB25_Female J2
-U 1 1 5A0F8290
-P 7600 3800
-F 0 "J2" H 7600 5150 50  0000 C CNN
-F 1 "DB25_Female" H 7600 2425 50  0000 C CNN
-F 2 "Connectors_DSub:DSUB-25_Female_EdgeMount_Pitch2.77mm" H 7600 3800 50  0001 C CNN
-F 3 "" H 7600 3800 50  0001 C CNN
-	1    7600 3800
-	1    0    0    -1  
-$EndComp
-$Comp
 L GND #PWR01
 U 1 1 5A0F99D1
 P 3800 5400
@@ -392,4 +381,32 @@ Connection ~ 7200 3900
 Wire Wire Line
 	7200 3500 7300 3500
 Connection ~ 7200 3700
+$Comp
+L DB25_Male_MountingHoles J2
+U 1 1 5A231C41
+P 7600 3800
+F 0 "J2" H 7600 5250 50  0000 C CNN
+F 1 "DB25_Male_MountingHoles" H 7600 5175 50  0000 C CNN
+F 2 "Connectors_DSub:DSUB-25_Male_Horizontal_Pitch2.77x2.84mm_EdgePinOffset9.90mm_Housed_MountingHolesOffset11.32mm" H 7600 3800 50  0001 C CNN
+F 3 "" H 7600 3800 50  0001 C CNN
+	1    7600 3800
+	1    0    0    1   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5A232878
+P 7800 2400
+F 0 "#PWR?" H 7800 2150 50  0001 C CNN
+F 1 "GND" H 7800 2250 50  0000 C CNN
+F 2 "" H 7800 2400 50  0001 C CNN
+F 3 "" H 7800 2400 50  0001 C CNN
+	1    7800 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7600 2400 7600 2300
+Wire Wire Line
+	7600 2300 7800 2300
+Wire Wire Line
+	7800 2300 7800 2400
 $EndSCHEMATC
