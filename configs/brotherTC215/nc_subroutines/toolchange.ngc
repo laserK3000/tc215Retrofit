@@ -1,0 +1,123 @@
+
+o<toolchange> sub
+
+(orient spindle)
+m19 r35 q2
+
+M73 (auto-restore modal settings on return)
+G21 (all in SI units)
+#5599 = 1  (turn on debug, output)
+
+m66 P11 L0 Q1
+#1=#5399
+m66 P12 L0 Q1
+#2=#5399
+m66 P13 L0 Q1
+#3=#5399
+m66 P14 L0 Q1
+#4=#5399
+
+
+#<current_tool>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
+(debug, toolchanger started: current tool=#<current_tool> current pocket: #<current_pocket>)
+(debug, toolchanger started: selected tool=#<selected_tool> selected pocket: #<selected_pocket>)
+
+#<counter>=0
+
+#<tool> = #<selected_tool>
+
+
+o180 if [#<current_tool> EQ 0]
+	(MSG, current ATC pocket number invalid)
+	#<tool>=#<current_tool>
+	endsub [0]
+o180 endif
+
+o120 if [#<tool> GT 0]
+	#<newtool>=#<tool>
+o120 else
+	(MSG, pocket number not positive)
+	#<newtool>=#<current_tool>
+	endsub [0]
+o120 endif
+
+#<movepos>=[#<newtool>-#<current_tool>]
+#<absmovepos>=ABS[#<movepos>]
+
+o111 if [#<absmovepos> GT 5]
+	#<shortmovepos>=[ABS[10-#<absmovepos>]]
+o111 endif
+
+#<finalmovepos>=#<absmovepos>
+
+o106 if [#<movepos> LT 0]
+	M64 p4
+	o119 if [#<absmovepos> GT 5]
+	M65 p4
+	#<finalmovepos>=#<shortmovepos>
+	o119 endif
+o106 else
+	M65 p4
+	o129 if [#<absmovepos> GT 5]
+	M64 p4
+	#<finalmovepos>=#<shortmovepos>
+	o129 endif
+o106 endif
+
+(move to ATC home position)
+G53 G1 Z343 F20000
+
+(check whether at ATC home)
+m66 P16 L0 Q1
+#<atcready>=#5399
+o112 if [#<atcready> EQ 1]
+	o104 if [#<current_tool> NE #<newtool>]
+		m64 p3
+		
+		o101 while [#<counter> LT [#<finalmovepos>]]
+			m66 P10 L1 Q1
+			#<counter>=[#<counter>+1]
+		o101 endwhile
+		g4 p.1
+		m65 p3
+		m65 p4
+	o104 else
+		(MSG, failed because you are already on that tool)
+	o104 endif
+o112 else
+	(MSG, abort: not at ATC HOME abort)
+	endsub [0]
+o112 endif
+
+(read current pocket number from encoders)
+m66 P11 L0 Q1
+#1=#5399
+m66 P12 L0 Q1
+#2=#5399
+m66 P13 L0 Q1
+#3=#5399
+m66 P14 L0 Q1
+#4=#5399
+#<current_tool>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
+
+(read dec pin to check alignment)
+m66 P10 L0 Q1
+#<notaligned>=#5399
+
+o150 if [#<notaligned> NE 1]
+	(debug, ATC not aligned or between stations.)
+	endsub [0]
+o150 elseif [#<newtool> NE #<current_tool>]
+	(debug, ATC on the wrong tool.)
+	endsub [0]
+o150 else
+	#<tool_in_spindle>=#<selected_tool>
+	G53 G1 Z199 F20000
+o150 endif
+
+(debug, toolchanger finished: current tool=#<current_tool> current pocket: #<current_pocket>)
+(debug, toolchanger finished: selected tool=#<selected_tool> selected pocket: #<selected_pocket>)
+
+o<toolchange> endsub [1]
+
+m2

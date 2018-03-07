@@ -47,9 +47,9 @@ OUT
 01 Relay for CNATC Pin 7+8 (207+208)
 02 Relay for CNATC Pin 1 (206) 
 03 
-04 
-05 
-06 Z Break Relay
+04 Z Break Relay
+05 MSV
+06 
 07 
 --
 08 
