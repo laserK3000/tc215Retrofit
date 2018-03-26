@@ -8,7 +8,7 @@ setp     hm2_5i25.0.watchdog.timeout_ns 10000000
 loadrt pid names=pid.x,pid.y,pid.z,pid.s
 loadrt orient names=orient 
 loadrt pid names=orient-pid
-loadrt mux2 names=orient-mux
+loadrt mux2 names=orient-mux,z-limit-mux
 loadrt or2 names=orient-mux-or
 newinst orn spindle-enable-or pincount=3
 loadrt near names=near-spindle
@@ -20,6 +20,7 @@ loadrt and2 names=spindle-is-oriented-and
 addf hm2_5i25.0.read		servo-thread
 addf motion-command-handler 	servo-thread
 addf motion-controller 		servo-thread
+addf z-limit-mux		servo-thread
 addf pid.x.do-pid-calcs         servo-thread
 addf pid.y.do-pid-calcs         servo-thread
 addf pid.z.do-pid-calcs         servo-thread
@@ -36,7 +37,9 @@ addf debounce-spindle		servo-thread
 addf edge.0			servo-thread
 addf spindle-is-oriented-and	servo-thread
 
-# external output signals
+# motion controller IO:
+
+net z-limit-select motion.digital-out-00 => z-limit-mux.sel
 
 # atc-home
 net atc-home <= motion.digital-in-16 hm2_5i25.0.7i77.0.0.input-11
@@ -93,7 +96,8 @@ net home-x     <=  hm2_5i25.0.7i77.0.0.input-08
 net home-y     <=  hm2_5i25.0.7i77.0.0.input-09
 
 # --- HOME-Z ---
-net home-z     <=  hm2_5i25.0.7i77.0.0.input-10
+# use atr-range for z home, see further down
+
 
 
 #*******************
@@ -250,10 +254,15 @@ net z-pos-rawcounts        <=  hm2_5i25.0.encoder.02.rawcounts
 
 # ---setup home / limit switch signals---
 
-net home-z     =>  axis.2.home-sw-in
+net atc-range     =>  axis.2.home-sw-in
 net min-z     =>  axis.2.neg-lim-sw-in
 net max-z     =>  axis.2.pos-lim-sw-in
 
+# switch z-axis soft limits
+setp z-limit-mux.in0 [AXIS_2]MAX_LIMIT
+setp z-limit-mux.in1 [AXIS_2]MAX_LIMIT_ATC
+net z-limit-out <= z-limit-mux.out
+#net z-limit-out => ini.2.max_limit
 
 #*******************
 #  SPINDLE S
@@ -421,8 +430,7 @@ net machine-is-enabled        <=  motion.motion-enabled
 net estop-out     <=  iocontrol.0.user-enable-out
 net estop-out     =>  iocontrol.0.emc-enable-in
 
-#  ---manual tool change signals---
-#loadusr -W hal_manualtoolchange
+#  --- tool change signals---
 net tool-change-request     iocontrol.0.tool-change           iocontrol.0.tool-changed
 #net tool-change-confirmed   iocontrol.0.tool-changed      <=  hal_manualtoolchange.changed
 #net tool-number             iocontrol.0.tool-prep-number      hal_manualtoolchange.number
