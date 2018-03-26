@@ -18,30 +18,37 @@ m66 P14 L0 Q1
 #4=#5399
 
 
-#<current_tool>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
+#<current_pocket>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
 (debug, toolchanger started: current tool=#<current_tool> current pocket: #<current_pocket>)
 (debug, toolchanger started: selected tool=#<selected_tool> selected pocket: #<selected_pocket>)
 
 #<counter>=0
 
-#<tool> = #<selected_tool>
+#<pocket> = #<selected_pocket>
 
 
-o180 if [#<current_tool> EQ 0]
+
+o170 if [#<selected_tool> LT 11]
+	(abort, tool numbers must be larger than 10 (>10). Don't mix up tool numbers with pocket numbers, recheck the tool table.)
+	#<pocket>=#<current_pocket>
+	endsub [0]
+o170 endif
+
+o180 if [#<current_pocket> EQ 0]
 	(abort, current ATC pocket number invalid)
-	#<tool>=#<current_tool>
+	#<pocket>=#<current_pocket>
 	endsub [0]
 o180 endif
 
-o120 if [#<tool> GT 0]
-	#<newtool>=#<tool>
+o120 if [#<pocket> GT 0]
+	#<newpocket>=#<pocket>
 o120 else
 	(abort, pocket number not positive)
-	#<newtool>=#<current_tool>
+	#<newpocket>=#<current_pocket>
 	endsub [0]
 o120 endif
 
-#<movepos>=[#<newtool>-#<current_tool>]
+#<movepos>=[#<newpocket>-#<current_pocket>]
 #<absmovepos>=ABS[#<movepos>]
 
 o111 if [#<absmovepos> GT 5]
@@ -73,7 +80,7 @@ G53 G1 Z143 F1000
 m66 P16 L0 Q1
 #<atcready>=#5399
 o112 if [#<atcready> EQ 1]
-	o104 if [#<current_tool> NE #<newtool>]
+	o104 if [#<current_pocket> NE #<newpocket>]
 		m64 p3
 		
 		o101 while [#<counter> LT [#<finalmovepos>]]
@@ -84,7 +91,7 @@ o112 if [#<atcready> EQ 1]
 		m65 p3
 		m65 p4
 	o104 else
-		(abort, failed because you are already on that tool)
+		(abort, failed because you are already on that pocket)
 	o104 endif
 o112 else
 	(abort, abort: not at ATC HOME abort)
@@ -100,7 +107,7 @@ m66 P13 L0 Q1
 #3=#5399
 m66 P14 L0 Q1
 #4=#5399
-#<current_tool>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
+#<current_pocket>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
 
 (read dec pin to check alignment)
 m66 P10 L0 Q1
@@ -109,11 +116,11 @@ m66 P10 L0 Q1
 o150 if [#<notaligned> NE 1]
 	(abort, ATC not aligned or between stations.)
 	endsub [0]
-o150 elseif [#<newtool> NE #<current_tool>]
-	(abort, ATC on the wrong tool.)
+o150 elseif [#<newpocket> NE #<current_pocket>]
+	(abort, ATC on the wrong pocket.)
 	endsub [0]
 o150 else
-	#<tool_in_spindle>=#<selected_tool>
+	#<tool_in_spindle>=#<selected_pocket>
 	G53 G1 Z0 F1000
 	(switch off z-axis soft limit extend)
 	m65 p0
