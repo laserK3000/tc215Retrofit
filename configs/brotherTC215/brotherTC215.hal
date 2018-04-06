@@ -38,8 +38,7 @@ addf edge.0			servo-thread
 addf spindle-is-oriented-and	servo-thread
 
 # motion controller IO:
-
-net z-limit-select motion.digital-out-00 => z-limit-mux.sel
+net tool-change-confirmed motion.digital-out-00 => iocontrol.0.tool-changed
 
 # atc-home
 net atc-home <= motion.digital-in-16 hm2_5i25.0.7i77.0.0.input-11
@@ -47,16 +46,16 @@ net atc-home <= motion.digital-in-16 hm2_5i25.0.7i77.0.0.input-11
 # atc-range
 net atc-range <= motion.digital-in-17 hm2_5i25.0.7i77.0.0.input-12
 
-#atc-run
+# atc-run
 net atc-run <= motion.digital-out-03 hm2_5i25.0.7i77.0.0.output-02
 
-#atc-direction
+# atc-direction
 net atc-direction <= motion.digital-out-04 hm2_5i25.0.7i77.0.0.output-03
 
-#atc-dec
+# atc-dec
 net atc-dec <= motion.digital-in-10 hm2_5i25.0.7i77.0.0.input-16
 
-#encoder atc
+# encoder atc
 net atc-enc-1 motion.digital-in-11 <= hm2_5i25.0.7i77.0.0.input-17
 net atc-enc-2 motion.digital-in-12 <= hm2_5i25.0.7i77.0.0.input-18
 net atc-enc-3 motion.digital-in-13 <= hm2_5i25.0.7i77.0.0.input-19
@@ -262,6 +261,8 @@ net max-z     =>  axis.2.pos-lim-sw-in
 setp z-limit-mux.in0 [AXIS_2]MAX_LIMIT
 setp z-limit-mux.in1 [AXIS_2]MAX_LIMIT_ATC
 net z-limit-out <= z-limit-mux.out
+net z-limit-select iocontrol.0.tool-change => z-limit-mux.sel
+
 #net z-limit-out => ini.2.max_limit
 
 #*******************
@@ -431,8 +432,5 @@ net estop-out     <=  iocontrol.0.user-enable-out
 net estop-out     =>  iocontrol.0.emc-enable-in
 
 #  --- tool change signals---
-net tool-change-request     iocontrol.0.tool-change           iocontrol.0.tool-changed
-#net tool-change-confirmed   iocontrol.0.tool-changed      <=  hal_manualtoolchange.changed
-#net tool-number             iocontrol.0.tool-prep-number      hal_manualtoolchange.number
-net tool-prepare-loopback   iocontrol.0.tool-prepare          iocontrol.0.tool-prepared
+net tool-prepare-loopback   iocontrol.0.tool-prepare     =>     iocontrol.0.tool-prepared
 
