@@ -19,3 +19,7 @@ _autosave-*
 # Exported BOM files
 *.xml
 *.csv
+
+# machinekit/linuxcnc: files storing persistent variables
+*.tbl
+*.var
