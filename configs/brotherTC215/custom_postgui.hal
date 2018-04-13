@@ -1,2 +1,2 @@
-# Include your custom_postgui HAL commands here
-# This file will not be overwritten when you run PNCconf again
+# switch z-axis soft limits, part 2
+net z-limit-out => ini.2.max_limit

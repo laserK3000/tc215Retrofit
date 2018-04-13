@@ -2,11 +2,11 @@
 o<toolchange> sub
 
 (orient spindle)
-m19 r35 q2
+m19 r0 q1
 
 M73 (auto-restore modal settings on return)
 G21 (all in SI units)
-#5599 = 1  (turn on debug, output)
+#5599 = 0  (turn on debug, output)
 
 m66 P11 L0 Q1
 #1=#5399
@@ -29,7 +29,7 @@ m66 P14 L0 Q1
 
 
 o170 if [#<selected_tool> LT 11]
-	(abort, tool numbers must be larger than 10 (>10). Don't mix up tool numbers with pocket numbers, recheck the tool table.)
+	(abort, tool numbers must be larger than 10. Don't mix up tool numbers with pocket numbers, recheck the tool table.)
 	#<pocket>=#<current_pocket>
 	endsub [0]
 o170 endif
@@ -73,8 +73,9 @@ o106 endif
 
 (switch z-axis soft limit to allow travel into the ATC range)
 m64 p0
+G4 p1
 (move to ATC home position)
-G53 G1 Z143 F1000
+G53 G1 Z133 F20000
 
 (check whether at ATC home)
 m66 P16 L0 Q1
@@ -121,7 +122,7 @@ o150 elseif [#<newpocket> NE #<current_pocket>]
 	endsub [0]
 o150 else
 	#<tool_in_spindle>=#<selected_pocket>
-	G53 G1 Z0 F1000
+	G53 G1 Z0 F20000
 	(switch off z-axis soft limit extend)
 	m65 p0
 o150 endif

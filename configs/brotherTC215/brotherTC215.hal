@@ -262,7 +262,7 @@ net max-z     =>  axis.2.pos-lim-sw-in
 setp z-limit-mux.in0 [AXIS_2]MAX_LIMIT
 setp z-limit-mux.in1 [AXIS_2]MAX_LIMIT_ATC
 net z-limit-out <= z-limit-mux.out
-#net z-limit-out => ini.2.max_limit
+# ini.2.max_limit is connectedd in custom_postgui.hal
 
 #*******************
 #  SPINDLE S
