@@ -1,4 +1,3 @@
-
 o<toolchange> sub
 
 (orient spindle)
@@ -71,9 +70,6 @@ o106 else
 	o129 endif
 o106 endif
 
-(switch z-axis soft limit to allow travel into the ATC range)
-m64 p0
-G4 p1
 (move to ATC home position)
 G53 G1 Z133 F20000
 
@@ -123,8 +119,8 @@ o150 elseif [#<newpocket> NE #<current_pocket>]
 o150 else
 	#<tool_in_spindle>=#<selected_pocket>
 	G53 G1 Z0 F20000
-	(switch off z-axis soft limit extend)
-	m65 p0
+	(confirm tool change to iocontrol.0.tool-changed via hal wiring)
+	m64 p0
 o150 endif
 
 (debug, toolchanger finished: current tool=#<current_tool> current pocket: #<current_pocket>)
