@@ -1,11 +1,18 @@
 o<toolchange> sub
 
-(orient spindle)
-m19 r0 q1
-
 M73 (auto-restore modal settings on return)
 G21 (all in SI units)
 #5599 = 0  (turn on debug, output)
+
+m66 P1 L0 Q1
+o169 if [#5399 NE 0]
+	(abort, spindle not indexed)
+o169 endif
+
+(orient spindle)
+m19 r0 q1
+
+g04 p0.1
 
 m66 P11 L0 Q1
 #1=#5399
@@ -15,7 +22,6 @@ m66 P13 L0 Q1
 #3=#5399
 m66 P14 L0 Q1
 #4=#5399
-
 
 #<current_pocket>=[[#1*1]+[#2*2]+[#3*4]+[#4*8]]
 (debug, toolchanger started: current tool=#<current_tool> current pocket: #<current_pocket>)
@@ -70,6 +76,9 @@ o106 else
 	o129 endif
 o106 endif
 
+(unlock z-travel for ATC range)
+m64 p1
+
 (move to ATC home position)
 G53 G1 Z133 F20000
 
@@ -119,6 +128,8 @@ o150 elseif [#<newpocket> NE #<current_pocket>]
 o150 else
 	#<tool_in_spindle>=#<selected_pocket>
 	G53 G1 Z0 F20000
+	(lock z-travel again)
+	m65 p1
 	(confirm tool change to iocontrol.0.tool-changed via hal wiring)
 	m64 p0
 o150 endif

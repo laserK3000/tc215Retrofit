@@ -3,6 +3,7 @@ loadrt tp
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES tp=tp kins=trivkins num_dio=48
 loadrt probe_parport
 loadrt hostmot2
+loadusr io
 loadrt hm2_pci config=" num_encoders=6 num_pwmgens=0 num_3pwmgens=0 num_stepgens=0 sserial_port_0=000xxxxx " 
 setp     hm2_5i25.0.watchdog.timeout_ns 10000000
 loadrt pid names=pid.x,pid.y,pid.z,pid.s
@@ -39,6 +40,12 @@ addf spindle-is-oriented-and	servo-thread
 
 # motion controller IO:
 net tool-change-confirmed motion.digital-out-00 => iocontrol.0.tool-changed
+
+# switch atc ranges from toolchange subroutine
+net z-limit-select motion.digital-out-01 => z-limit-mux.sel
+
+# spindle index pulse wired to motion controller
+net spindle-index-enable => motion.digital-in-01
 
 # atc-home
 net atc-home <= motion.digital-in-16 hm2_5i25.0.7i77.0.0.input-11
@@ -262,7 +269,7 @@ setp z-limit-mux.in0 [AXIS_2]MAX_LIMIT
 setp z-limit-mux.in1 [AXIS_2]MAX_LIMIT_ATC
 net z-limit-out <= z-limit-mux.out
 # ini.2.max_limit is connectedd in custom_postgui.hal
-net z-limit-select iocontrol.0.tool-change => z-limit-mux.sel
+
 
 #*******************
 #  SPINDLE S
@@ -419,12 +426,6 @@ net probe-in     =>  motion.probe-input
 net in-position               <=  motion.in-position
 net machine-is-enabled        <=  motion.motion-enabled
 
-#  ---digital in / out signals---
-
-#net din-00     =>  motion.digital-in-00
-#net din-01     =>  motion.digital-in-01
-#net din-02     =>  motion.digital-in-02
-#net din-03     =>  motion.digital-in-03
 #  ---estop signals---
 
 net estop-out     <=  iocontrol.0.user-enable-out
