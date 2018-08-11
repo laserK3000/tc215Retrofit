@@ -2,7 +2,7 @@ o<toolchange> sub
 
 M73 (auto-restore modal settings on return)
 G21 (all in SI units)
-#5599 = 0  (turn on debug, output)
+#5599 = 0  (turn on debug output)
 
 m66 P1 L0 Q1
 o169 if [#5399 NE 0]

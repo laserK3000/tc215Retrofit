@@ -1,7 +1,6 @@
 loadrt trivkins
 loadrt tp
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES tp=tp kins=trivkins num_dio=48
-loadrt probe_parport
 loadrt hostmot2
 loadusr io
 loadrt hm2_pci config=" num_encoders=6 num_pwmgens=0 num_3pwmgens=0 num_stepgens=0 sserial_port_0=000xxxxx " 
@@ -15,8 +14,9 @@ newinst orn spindle-enable-or pincount=3
 loadrt near names=near-spindle
 loadrt debounce names=debounce-spindle count=1
 loadrt edge count=1
-loadrt and2 names=spindle-is-oriented-and
-
+loadrt and2 names=spindle-is-oriented-and,probe-and
+loadrt bitwise names=probe-comp
+loadrt conv_s32_u32 names=conv1
 
 addf hm2_5i25.0.read		servo-thread
 addf motion-command-handler 	servo-thread
@@ -37,6 +37,8 @@ addf near-spindle		servo-thread
 addf debounce-spindle		servo-thread
 addf edge.0			servo-thread
 addf spindle-is-oriented-and	servo-thread
+addf probe-and			servo-thread
+addf conv1			servo-thread
 
 # motion controller IO:
 net tool-change-confirmed motion.digital-out-00 => iocontrol.0.tool-changed
@@ -104,6 +106,28 @@ net home-y     <=  hm2_5i25.0.7i77.0.0.input-09
 # --- HOME-Z ---
 # use atr-range for z home, see further down
 
+# IR probe in (Renishaw OMP40-2 with MI4)
+#net probe-in <= 
+
+#*******************
+#  RENISHAW OMP40-2
+#*******************
+
+# IR probe in (Renishaw OMP40-2 with MI4)
+net probe-in <= hm2_5i25.0.7i77.0.0.input-31
+net probe-error <= hm2_5i25.0.7i77.0.0.input-29-not
+
+# if motion is probing (value 5) and error from the
+# MI4, then inhibit motion to prevent crash on lost
+# IR connection
+net probe-error => probe-and.in0
+net motion-current-motion-type motion.current-motion => conv1.in
+net motion-current-motion-type_u32 conv1.out => probe-comp.in0
+setp probe-comp.in1 5
+net probe-comp.out => probe-and.in1
+# wire also to probe routine input
+# net probe-error-and.out => motion.feed-inhibit
+# net probe-error =>  probe.user.error
 
 
 #*******************
