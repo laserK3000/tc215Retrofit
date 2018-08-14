@@ -2,11 +2,13 @@ o<toolchange> sub
 
 M73 (auto-restore modal settings on return)
 G21 (all in SI units)
+G90 (absolute positioning)
 #5599 = 0  (turn on debug output)
 
 m66 P1 L0 Q1
 o169 if [#5399 NE 0]
 	(abort, spindle not indexed)
+	o<toolchange> return [0]
 o169 endif
 
 (orient spindle)
@@ -36,22 +38,27 @@ m66 P14 L0 Q1
 o170 if [#<selected_tool> LT 11]
 	(abort, tool numbers must be larger than 10. Don't mix up tool numbers with pocket numbers, recheck the tool table.)
 	#<pocket>=#<current_pocket>
-	endsub [0]
+	o<toolchange> return [0]
 o170 endif
 
 o180 if [#<current_pocket> EQ 0]
-	(abort, current ATC pocket number invalid)
 	#<pocket>=#<current_pocket>
-	endsub [0]
+	(abort, ATC: current ATC pocket number invalid)
+	o<toolchange> return [0]
 o180 endif
 
 o120 if [#<pocket> GT 0]
 	#<newpocket>=#<pocket>
 o120 else
-	(abort, pocket number not positive)
+	(abort, ATC: pocket number not positive)
 	#<newpocket>=#<current_pocket>
-	endsub [0]
+	o<toolchange> return [0]
 o120 endif
+
+o121 if [#<newpocket> EQ #<current_pocket>]
+	(print, ATC: Pocket already selected.)
+	o<toolchange> return [1]
+o121 endif
 
 #<movepos>=[#<newpocket>-#<current_pocket>]
 #<absmovepos>=ABS[#<movepos>]
@@ -97,11 +104,11 @@ o112 if [#<atcready> EQ 1]
 		m65 p3
 		m65 p4
 	o104 else
-		(abort, failed because you are already on that pocket)
+		(abort, ATC: failed because already on that pocket)
 	o104 endif
 o112 else
-	(abort, abort: not at ATC HOME abort)
-	endsub [0]
+	(abort, ATC: not at ATC HOME abort)
+	o<toolchange> return [0]
 o112 endif
 
 (read current pocket number from encoders)
@@ -120,11 +127,11 @@ m66 P10 L0 Q1
 #<notaligned>=#5399
 
 o150 if [#<notaligned> NE 1]
-	(abort, ATC not aligned or between stations.)
-	endsub [0]
+	(abort, ATC: ATC not aligned or between stations.)
+	o<toolchange> return [0]
 o150 elseif [#<newpocket> NE #<current_pocket>]
-	(abort, ATC on the wrong pocket.)
-	endsub [0]
+	(abort, ATC: ATC on the wrong pocket.)
+	return
 o150 else
 	#<tool_in_spindle>=#<selected_pocket>
 	G53 G1 Z0 F20000
@@ -134,8 +141,8 @@ o150 else
 	m64 p0
 o150 endif
 
-(debug, toolchanger finished: current tool=#<current_tool> current pocket: #<current_pocket>)
-(debug, toolchanger finished: selected tool=#<selected_tool> selected pocket: #<selected_pocket>)
+(debug, ATC: finished: current tool=#<current_tool> current pocket: #<current_pocket>)
+(debug, ATC: finished: selected tool=#<selected_tool> selected pocket: #<selected_pocket>)
 
 o<toolchange> endsub [1]
 
