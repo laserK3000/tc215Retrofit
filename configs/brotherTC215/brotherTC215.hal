@@ -70,6 +70,12 @@ net atc-enc-2 motion.digital-in-12 <= hm2_5i25.0.7i77.0.0.input-18
 net atc-enc-3 motion.digital-in-13 <= hm2_5i25.0.7i77.0.0.input-19
 net atc-enc-4 motion.digital-in-14 <= hm2_5i25.0.7i77.0.0.input-20
 
+# optical probe interface wired to motion controller for atc probe activation
+net probe-touch-reset 	motion.digital-out-02 <= hm2_5i25.0.7i77.0.0.output-01
+net probe-touch-in 	motion.digital-in-18
+net probe-touch-error 	motion.digital-in-19
+
+
 # --- MACHINE-IS-ENABLED ---
 net machine-is-enabled hm2_5i25.0.7i77.0.0.output-05
 
@@ -106,28 +112,25 @@ net home-y     <=  hm2_5i25.0.7i77.0.0.input-09
 # --- HOME-Z ---
 # use atr-range for z home, see further down
 
-# IR probe in (Renishaw OMP40-2 with MI4)
-#net probe-in <= 
-
 #*******************
 #  RENISHAW OMP40-2
 #*******************
 
 # IR probe in (Renishaw OMP40-2 with MI4)
-net probe-in <= hm2_5i25.0.7i77.0.0.input-31
-net probe-error <= hm2_5i25.0.7i77.0.0.input-29-not
+net probe-touch-in <= hm2_5i25.0.7i77.0.0.input-31
+net probe-touch-error <= hm2_5i25.0.7i77.0.0.input-29-not
 
 # if motion is probing (value 5) and error from the
 # MI4, then inhibit motion to prevent crash on lost
 # IR connection
-net probe-error => probe-and.in0
+net probe-touch-error => probe-and.in0
 net motion-current-motion-type motion.current-motion => conv1.in
 net motion-current-motion-type_u32 conv1.out => probe-comp.in0
 setp probe-comp.in1 5
 net probe-comp.out => probe-and.in1
 # wire also to probe routine input
-# net probe-error-and.out => motion.feed-inhibit
-# net probe-error =>  probe.user.error
+# net probe-touch-error-and.out => motion.feed-inhibit
+# net probe-touch-error =>  probe.user.error
 
 
 #*******************
@@ -443,7 +446,7 @@ net coolant-flood     <=  iocontrol.0.coolant-flood
 
 #  ---probe signal---
 
-net probe-in     =>  motion.probe-input
+net probe-touch-in     =>  motion.probe-input
 
 #  ---motion control signals---
 

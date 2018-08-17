@@ -85,6 +85,29 @@ o106 else
 	o129 endif
 o106 endif
 
+(if current tool is the optical probe, deactivate it before moving)
+o161 if [#<tool_in_spindle> EQ 99]
+	(print, switching off probe..)
+	m64 p2
+	g04 p0.3
+	m65 p2
+	g04 p2
+	(if probe was already off, this might have switched it back on)
+	m66 p19 l0 q1
+	#<probe_error>=#5399
+	o162 if [#<probe_error> EQ 0]
+		m64 p2
+		g04 p0.3
+		m65 p2
+		g04 p2
+	o162 endif
+	m66 p19 l0 q1
+	#<probe_error>=#5399
+	o163 if [#<probe_error> EQ 0]
+		(print, could not switch off probe, try manually by removing battery)
+	o163 endif
+o161 endif
+
 (unlock z-travel for ATC range)
 m64 p1
 
@@ -141,6 +164,29 @@ o150 else
 	m65 p1
 	(confirm tool change to iocontrol.0.tool-changed via hal wiring)
 	m64 p0
+	(if tool is the optical probe, activate it)
+	o151 if [#<selected_tool> EQ 99]
+		(print, switching on probe..)
+		m64 p2
+		g04 p0.3
+		m65 p2
+		g04 p2
+		(if probe was already on, this might have switched it back off)
+		m66 p19 l0 q1
+		#<probe_error>=#5399
+		o152 if [#<probe_error> EQ 1]
+			m64 p2
+			g04 p0.3
+			m65 p2
+			g04 p2
+		o152 endif
+		m66 p19 l0 q1
+		#<probe_error>=#5399
+		o153 if [#<probe_error> EQ 1]
+			(abort, could not switch on probe)
+		o153 endif
+	o151 endif
+	
 o150 endif
 
 o<toolchange> endsub [1]
